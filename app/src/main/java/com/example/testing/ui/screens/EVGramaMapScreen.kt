@@ -16,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.testing.data.ChargingShop
+import com.example.testing.ui.theme.TestingTheme
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -40,31 +42,53 @@ fun EVGramaMapScreen(
         position = CameraPosition.fromLatLngZoom(if (isUserTraveller) travellerLocation else hostLocation, 15f)
     }
     val travellerMarkerState = rememberMarkerState(position = travellerLocation)
+    val hostMarkerState = rememberMarkerState(position = hostLocation)
 
     var selectedShop by remember { mutableStateOf<ChargingShop?>(null) }
     val scope = rememberCoroutineScope()
 
+    // Keep markers in sync with live data
     LaunchedEffect(travellerLocation) {
         travellerMarkerState.position = travellerLocation
+    }
+    
+    LaunchedEffect(hostLocation) {
+        hostMarkerState.position = hostLocation
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (LocalInspectionMode.current) {
             Box(modifier = Modifier.fillMaxSize().background(Color(0xFFE5E7EB)), contentAlignment = Alignment.Center) {
-                Text("Map Preview", color = Color.Gray, fontWeight = FontWeight.Bold)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(Icons.Default.Map, null, modifier = Modifier.size(64.dp), tint = Color.Gray)
+                    Text("Live Google Map Placeholder", color = Color.Gray, fontWeight = FontWeight.Bold)
+                    Text("(Will render on Device)", color = Color.Gray, fontSize = 12.sp)
+                }
             }
         } else {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
-                uiSettings = MapUiSettings(zoomControlsEnabled = true)
+                uiSettings = MapUiSettings(zoomControlsEnabled = true, myLocationButtonEnabled = true),
+                properties = MapProperties(isMyLocationEnabled = true)
             ) {
+                // Current User Marker (Traveller)
                 Marker(
                     state = travellerMarkerState,
-                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE),
-                    onClick = { true }
+                    title = "You",
+                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                 )
 
+                // Host Marker (If not traveller)
+                if (!isUserTraveller) {
+                    Marker(
+                        state = hostMarkerState,
+                        title = "Your Shop",
+                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)
+                    )
+                }
+
+                // Shop Markers
                 for (shop in shops) {
                     MarkerInfoWindow(
                         state = rememberMarkerState(position = LatLng(shop.lat, shop.lng)),
@@ -73,13 +97,11 @@ fun EVGramaMapScreen(
                         ),
                         onClick = {
                             selectedShop = shop
-                            if (isUserTraveller) {
-                                scope.launch {
-                                    cameraPositionState.animate(
-                                        update = CameraUpdateFactory.newLatLngZoom(LatLng(shop.lat, shop.lng), 17f),
-                                        durationMs = 1500
-                                    )
-                                }
+                            scope.launch {
+                                cameraPositionState.animate(
+                                    update = CameraUpdateFactory.newLatLngZoom(LatLng(shop.lat, shop.lng), 16f),
+                                    durationMs = 1000
+                                )
                             }
                             false
                         }
@@ -91,20 +113,15 @@ fun EVGramaMapScreen(
                             border = BorderStroke(1.dp, Color(0xFF00DC7F).copy(alpha = 0.5f))
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Text("Shop: ${shop.name}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                Spacer(Modifier.height(4.dp))
-                                Text("Adaptor: ${shop.adapterType}", color = Color.White.copy(alpha = 0.8f), fontSize = 13.sp)
-                                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
-                                    Text("Price: ", color = Color.White.copy(alpha = 0.7f), fontSize = 14.sp)
-                                    Text("${shop.price}/hr", color = Color(0xFF00DC7F), fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                                }
-                                Text("Contact: ${shop.contact}", color = Color.White.copy(alpha = 0.8f), fontSize = 13.sp)
-                                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.White.copy(alpha = 0.1f))
-                                Box(
-                                    modifier = Modifier.fillMaxWidth().background(Color(0xFF00DC7F), RoundedCornerShape(8.dp)).padding(vertical = 8.dp),
-                                    contentAlignment = Alignment.Center
+                                Text(shop.name, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                Text("Price: ${shop.price}/hr", color = Color(0xFF00DC7F), fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(
+                                    onClick = { onChargeNow(shop) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00DC7F))
                                 ) {
-                                    Text("Book now", color = Color.Black, fontWeight = FontWeight.Black, fontSize = 14.sp)
+                                    Text("BOOK NOW", color = Color.Black, fontWeight = FontWeight.Black)
                                 }
                             }
                         }
@@ -113,27 +130,28 @@ fun EVGramaMapScreen(
             }
         }
 
+        // UI Overlays
         Card(
             modifier = Modifier.fillMaxWidth().padding(16.dp).align(Alignment.TopCenter),
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color(0xFF10B981)) }
-                Text("EV-Grama: Local Charging", color = Color.Gray, modifier = Modifier.weight(1f))
+                Text("EV-Grama: Nearby Charging", color = Color.Gray, modifier = Modifier.weight(1f), fontWeight = FontWeight.Medium)
                 Icon(Icons.Default.Search, null, tint = Color.Gray)
             }
         }
 
-        Button(
+        FloatingActionButton(
             onClick = onNext,
             modifier = Modifier.padding(24.dp).align(Alignment.BottomEnd),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00DC7F)),
-            shape = CircleShape,
-            contentPadding = PaddingValues(16.dp)
+            containerColor = Color(0xFF00DC7F),
+            contentColor = Color.Black,
+            shape = CircleShape
         ) {
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next", tint = Color.Black)
+            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next")
         }
 
         if (selectedShop != null) {
@@ -149,13 +167,10 @@ fun EVGramaMapScreen(
                         Column {
                             Text(shop.name, style = MaterialTheme.typography.titleLarge, color = Color.White, fontWeight = FontWeight.Bold)
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(shop.distance, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF10B981))
+                                Text(shop.distance, color = Color(0xFF10B981))
                                 Text(" • ", color = Color.White.copy(alpha = 0.5f))
-                                Text(shop.adapterType, style = MaterialTheme.typography.bodyMedium, color = Color(0xFFFFFFFF).copy(alpha = 0.7f))
-                                Text(" • ", color = Color.White.copy(alpha = 0.5f))
-                                Text(shop.price, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF00DC7F), fontWeight = FontWeight.Bold)
+                                Text(shop.price, color = Color(0xFF00DC7F), fontWeight = FontWeight.Bold)
                             }
-                            Text("Contact: ${shop.contact}", style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.5f))
                         }
                         IconButton(onClick = { selectedShop = null }) {
                             Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
@@ -164,11 +179,11 @@ fun EVGramaMapScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = { onChargeNow(shop) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().height(48.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Charge Now", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text("CHARGE NOW", color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
             }
