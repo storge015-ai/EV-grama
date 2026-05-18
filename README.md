@@ -33,6 +33,7 @@ File → Open → Select the EV-gramacharge folder
 Wait for Gradle sync to complete
 Run on emulator or device (minSdk 24 / Android 7.0+)
 📁 Project Structure
+
 EV-grama charge/
 ├── app/src/main/
 │   ├── java/com/skillexchange/
@@ -63,6 +64,7 @@ EV-grama charge/
 │       ├── menu/bottom_nav_menu.xml
 │       ├── drawable/                    # Chat bubbles
 │       └── values/                      # Colors, themes, strings
+
 ✅ Success Criteria Met
 adding details of traveller and hosts ✓
 Connecting the two user based to details  ✓
