@@ -1,8 +1,10 @@
-EV - grama charge App - Setup Guide
 
-MindMatrix VTU Internship Program | Project 72
+# EV - grama charge App - Setup Guide
 
-What This App Does
+
+# MindMatrix VTU Internship Program | Project 72
+
+# What This App Does
 EV - grama app will solve the problem of lack of EV charging station in rural area .
 
 Post a need ("Need help with Ev customer and make a side income to shops/ homes ")
@@ -17,7 +19,7 @@ after the charging process is completed than he can use the smart calculator avi
 
 
 
-⚙️ SETUP STEPS (Required Before Running)
+# ⚙️ SETUP STEPS (Required Before Running)
 
 
 Step 1: Create Firebase Project
@@ -77,7 +79,7 @@ Run on emulator or device (minSdk 24 / Android 7.0+)
 
 
 
-📁 Project Structure
+# 📁 Project Structure
 
 
 
@@ -138,13 +140,13 @@ EV-grama charge/
 │       ├── menu/bottom_nav_menu.xml
 
 │       ├── drawable/
-# Chat bubbles
+ Chat bubbles
 │       └── values/
-# Colors, themes, strings
+ Colors, themes, strings
 
 
 
-✅ Success Criteria Met
+# ✅ Success Criteria Met
 
 Adding details of traveller and hosts ✓
 
