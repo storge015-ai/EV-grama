@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.testing.ui.theme.TestingTheme
 
 @Composable
 fun OnboardingScreen(
@@ -135,7 +136,7 @@ fun OnboardingScreen(
 @Preview(showBackground = true, name = "Onboarding 1")
 @Composable
 fun Onboarding1Preview() {
-    MaterialTheme {
+    TestingTheme {
         OnboardingScreen(
             title = "Find and located charging Stations Near you",
             subtitle = "Find available charging points easily and reserve your charging point",
@@ -150,7 +151,7 @@ fun Onboarding1Preview() {
 @Preview(showBackground = true, name = "Onboarding 2")
 @Composable
 fun Onboarding2Preview() {
-    MaterialTheme {
+    TestingTheme {
         OnboardingScreen(
             title = "Book and pay at any time from anywhere",
             subtitle = "Reserve your slot as per your choice and then pay online to confirm booking",
@@ -165,7 +166,7 @@ fun Onboarding2Preview() {
 @Preview(showBackground = true, name = "Onboarding 3")
 @Composable
 fun Onboarding3Preview() {
-    MaterialTheme {
+    TestingTheme {
         OnboardingScreen(
             title = "Sit back and relax, let your EV charge",
             subtitle = "Reach the charging point per your slot and charge comfortably",

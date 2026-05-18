@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "testing"
+rootProject.name = "EV-grama charge App"
 include(":app")
  

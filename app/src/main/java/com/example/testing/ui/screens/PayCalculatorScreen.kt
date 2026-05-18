@@ -8,21 +8,20 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.CurrencyRupee
-import androidx.compose.material.icons.filled.ElectricScooter
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.testing.ui.components.AuthInputField
+import com.example.testing.ui.theme.TestingTheme
 
 @Composable
 fun PayCalculatorScreen(initialRate: String = "10", onBack: () -> Unit) {
@@ -69,35 +68,32 @@ fun PayCalculatorScreen(initialRate: String = "10", onBack: () -> Unit) {
                 border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
-                    AuthInputField(
+                    NumericStepperField(
                         label = "Seller Price (₹/hr)",
                         value = rate,
                         onValueChange = { rate = it },
-                        placeholder = "Enter host's price",
-                        trailingIcon = Icons.Default.CurrencyRupee,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                        placeholder = "Price",
+                        icon = Icons.Default.CurrencyRupee
                     )
                     
                     Spacer(modifier = Modifier.height(20.dp))
                     
-                    AuthInputField(
+                    NumericStepperField(
                         label = "Total Number of Hours",
                         value = hours,
                         onValueChange = { hours = it },
-                        placeholder = "Enter number of hours",
-                        trailingIcon = Icons.Default.AccessTime,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                        placeholder = "Hours",
+                        icon = Icons.Default.AccessTime
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    AuthInputField(
+                    NumericStepperField(
                         label = "Vehicle Range per hour (km/hr)",
                         value = rangePerHour,
                         onValueChange = { rangePerHour = it },
-                        placeholder = "e.g. 40",
-                        trailingIcon = Icons.Default.ElectricScooter,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                        placeholder = "Range",
+                        icon = Icons.Default.ElectricScooter
                     )
                 }
             }
@@ -193,10 +189,79 @@ fun PayCalculatorScreen(initialRate: String = "10", onBack: () -> Unit) {
     }
 }
 
+@Composable
+fun NumericStepperField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    icon: ImageVector,
+    step: Double = 1.0
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            color = Color.White,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        OutlinedTextField(
+            value = value,
+            onValueChange = { 
+                if (it.isEmpty() || it.toDoubleOrNull() != null || it == ".") {
+                    onValueChange(it) 
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(placeholder, color = Color.White.copy(alpha = 0.3f), fontSize = 14.sp) },
+            leadingIcon = {
+                IconButton(onClick = {
+                    val current = value.toDoubleOrNull() ?: 0.0
+                    val newValue = (current - step).coerceAtLeast(0.0)
+                    onValueChange(if (newValue % 1.0 == 0.0) newValue.toInt().toString() else String.format("%.1f", newValue))
+                }) {
+                    Icon(Icons.Default.Remove, contentDescription = "Decrease", tint = Color(0xFF00DC7F))
+                }
+            },
+            trailingIcon = {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(end = 4.dp)) {
+                    Icon(icon, null, tint = Color.White.copy(alpha = 0.4f))
+                    IconButton(onClick = {
+                        val current = value.toDoubleOrNull() ?: 0.0
+                        val newValue = current + step
+                        onValueChange(if (newValue % 1.0 == 0.0) newValue.toInt().toString() else String.format("%.1f", newValue))
+                    }) {
+                        Icon(Icons.Default.Add, contentDescription = "Increase", tint = Color(0xFF00DC7F))
+                    }
+                }
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            shape = RoundedCornerShape(16.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Color(0xFF0F1818),
+                unfocusedContainerColor = Color(0xFF0F1818),
+                focusedBorderColor = Color(0xFF00DC7F),
+                unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                cursorColor = Color(0xFF00DC7F),
+            ),
+            singleLine = true,
+            textStyle = LocalTextStyle.current.copy(
+                textAlign = TextAlign.Center, 
+                fontWeight = FontWeight.Bold, 
+                fontSize = 18.sp,
+                color = Color.White
+            )
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun PayCalculatorScreenPreview() {
-    MaterialTheme {
+    TestingTheme {
         PayCalculatorScreen(onBack = {})
     }
 }

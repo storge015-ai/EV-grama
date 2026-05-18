@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.testing.data.ChargingShop
+import com.example.testing.ui.theme.TestingTheme
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -32,71 +33,50 @@ import com.google.maps.android.compose.*
 @Composable
 fun ShopSelectionScreen(
     shops: List<ChargingShop>,
-    buyerLocation: LatLng = LatLng(47.6128, -122.3214), // Broadway & Madison, Seattle
-    onShopSelected: () -> Unit,
+    buyerLocation: LatLng = LatLng(47.6128, -122.3214),
+    onShopSelected: (ChargingShop) -> Unit,
     onBack: () -> Unit
 ) {
-    // Added LocalInspectionMode to fix black map issue in Android Studio Preview
-    val isInspectionMode = LocalInspectionMode.current
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(buyerLocation, 15f)
+        position = CameraPosition.fromLatLngZoom(buyerLocation, 14f)
     }
 
     Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFF091010)) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Google Map Section
+            // Google Map Section - Upper Portion
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                if (isInspectionMode) {
-                    // Show a placeholder in Preview mode to avoid black screen and rendering issues
+                if (LocalInspectionMode.current) {
+                    // Avoid rendering Google Maps in the Preview to prevent rendering errors
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color(0xFF152222)),
+                        modifier = Modifier.fillMaxSize().background(Color(0xFF152222)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                Icons.Default.FlashOn,
-                                null,
-                                tint = Color(0xFF00DC7F),
-                                modifier = Modifier.size(48.dp)
-                            )
-                            Text(
-                                "Live Map Preview",
-                                color = Color(0xFF00DC7F),
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
+                        Text("Map Preview", color = Color.Gray)
                     }
                 } else {
                     GoogleMap(
                         modifier = Modifier.fillMaxSize(),
                         cameraPositionState = cameraPositionState,
-                        properties = MapProperties(
-                            isMyLocationEnabled = false
-                        ),
+                        properties = MapProperties(isMyLocationEnabled = false),
                         uiSettings = MapUiSettings(
                             zoomControlsEnabled = false,
                             myLocationButtonEnabled = false
                         )
                     ) {
-                        // Buyer Marker (Red icon to match image)
                         Marker(
                             state = rememberMarkerState(position = buyerLocation),
                             title = "Your Location",
                             icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
                         )
 
-                        // Seller Markers
                         shops.forEach { shop ->
                             Marker(
                                 state = rememberMarkerState(position = LatLng(shop.lat, shop.lng)),
                                 title = shop.name,
-                                snippet = "Adaptor: ${shop.adapterType} • ${shop.price}/hr",
                                 icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
                             )
                         }
@@ -114,7 +94,7 @@ fun ShopSelectionScreen(
                 }
             }
 
-            // Shop List Section
+            // Shop List Section - Lower Portion
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -144,11 +124,11 @@ fun ShopSelectionScreen(
 }
 
 @Composable
-fun ShopCard(shop: ChargingShop, onClick: () -> Unit) {
+fun ShopCard(shop: ChargingShop, onClick: (ChargingShop) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick(shop) },
         colors = CardDefaults.cardColors(containerColor = Color(0xFF152222)),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
@@ -176,7 +156,7 @@ fun ShopCard(shop: ChargingShop, onClick: () -> Unit) {
                 Surface(
                     color = Color(0xFF00DC7F),
                     shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.clickable { onClick() }
+                    modifier = Modifier.clickable { onClick(shop) }
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
@@ -192,15 +172,18 @@ fun ShopCard(shop: ChargingShop, onClick: () -> Unit) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun ShopSelectionScreenPreview() {
-    // Explicitly providing all arguments to ChargingShop constructor to ensure class compatibility in Preview
-    val mockShops = listOf(
-        ChargingShop("Green Energy Hub", "0.8 km", "15A", "+91 999 888 777", "₹60", 4.9f, 47.6128, -122.3214, true),
-        ChargingShop("Solar Power Station", "2.1 km", "10A", "+91 888 000 222", "₹45", 4.3f, 47.6158, -122.3244, true)
+    val sampleShops = listOf(
+        ChargingShop("iTech Mobile Store", "0.5 km", "15A", "+91 999 000 111", "Open", 4.5f, 47.6128, -122.3214, isAvailable = true),
+        ChargingShop("Vikas Stationary", "0.8 km", "5A", "+91 999 000 222", "Open", 4.2f, 47.6148, -122.3234, isAvailable = false)
     )
-    MaterialTheme {
-        ShopSelectionScreen(shops = mockShops, onShopSelected = {}, onBack = {})
+    TestingTheme {
+        ShopSelectionScreen(
+            shops = sampleShops,
+            onShopSelected = {},
+            onBack = {}
+        )
     }
 }

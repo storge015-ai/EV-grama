@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.testing.ui.components.formatTime
+import com.example.testing.ui.theme.TestingTheme
 import kotlinx.coroutines.delay
 import java.util.Locale
 
@@ -204,7 +205,7 @@ fun ChargingScreen(onLogout: () -> Unit, onGoToPayCalculator: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun ChargingScreenPreview() {
-    MaterialTheme {
+    TestingTheme {
         ChargingScreen(onLogout = {}, onGoToPayCalculator = {})
     }
 }

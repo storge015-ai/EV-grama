@@ -24,6 +24,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.testing.ui.theme.TestingTheme
 
 @Composable
 fun WelcomeScreen(onNext: () -> Unit) {
@@ -276,7 +277,7 @@ fun SatelliteIcon(icon: ImageVector, modifier: Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun WelcomeScreenPreview() {
-    MaterialTheme {
+    TestingTheme {
         WelcomeScreen(onNext = {})
     }
 }

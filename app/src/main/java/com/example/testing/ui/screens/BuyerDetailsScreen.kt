@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.testing.ui.components.AuthInputField
 import com.example.testing.ui.components.LogoHeader
+import com.example.testing.ui.theme.TestingTheme
 
 @Composable
 fun BuyerDetailsScreen(onConfirm: () -> Unit, onBack: () -> Unit) {
@@ -116,7 +117,7 @@ fun BuyerDetailsScreen(onConfirm: () -> Unit, onBack: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun BuyerDetailsScreenPreview() {
-    MaterialTheme {
+    TestingTheme {
         BuyerDetailsScreen(onConfirm = {}, onBack = {})
     }
 }

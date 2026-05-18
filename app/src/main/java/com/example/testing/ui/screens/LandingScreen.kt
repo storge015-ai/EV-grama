@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.testing.ui.components.EVIllustration
 import com.example.testing.ui.components.LogoHeader
+import com.example.testing.ui.theme.TestingTheme
 
 @Composable
 fun LandingScreen(
@@ -123,7 +124,7 @@ fun LandingScreen(
 @Preview(showBackground = true)
 @Composable
 fun LandingScreenPreview() {
-    MaterialTheme {
+    TestingTheme {
         LandingScreen(onLoginClick = {}, onRegisterClick = {}, onBack = {})
     }
 }

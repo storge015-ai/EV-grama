@@ -26,13 +26,18 @@ import com.example.testing.data.ChargingShop
 import com.example.testing.ui.components.AuthInputField
 import com.example.testing.ui.components.LogoHeader
 import com.example.testing.ui.theme.TestingTheme
+import com.google.android.gms.maps.model.LatLng
 
 @Composable
-fun SellerDetailsScreen(onConfirm: (ChargingShop) -> Unit, onBack: () -> Unit) {
+fun HostDetailsScreen(
+    hostLocation: LatLng = LatLng(47.6158, -122.3234),
+    onConfirm: (ChargingShop) -> Unit,
+    onBack: () -> Unit
+) {
     var shopName by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
-    var adapterType by remember { mutableStateOf("5A") }
+    var locationName by remember { mutableStateOf("") }
+    var adapterType by remember { mutableStateOf("15A Fast") }
     var pricePerHour by remember { mutableStateOf("") }
 
     Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFF091010)) {
@@ -48,7 +53,7 @@ fun SellerDetailsScreen(onConfirm: (ChargingShop) -> Unit, onBack: () -> Unit) {
                 LogoHeader()
                 Spacer(modifier = Modifier.height(48.dp))
                 Text(
-                    "Seller Details",
+                    "Host Details",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF00DC7F),
@@ -60,7 +65,7 @@ fun SellerDetailsScreen(onConfirm: (ChargingShop) -> Unit, onBack: () -> Unit) {
                     label = "Shop Name",
                     value = shopName,
                     onValueChange = { shopName = it },
-                    placeholder = "e.g. Green Energy Hub",
+                    placeholder = "e.g. Ramesh Charging Hub",
                     trailingIcon = Icons.Default.Store
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -68,23 +73,23 @@ fun SellerDetailsScreen(onConfirm: (ChargingShop) -> Unit, onBack: () -> Unit) {
                     label = "Contact Number",
                     value = contactNumber,
                     onValueChange = { contactNumber = it },
-                    placeholder = "e.g. +91 999 000 111",
+                    placeholder = "e.g. +91 98765 43210",
                     trailingIcon = Icons.Default.Phone,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 AuthInputField(
                     label = "Location",
-                    value = location,
-                    onValueChange = { location = it },
+                    value = locationName,
+                    onValueChange = { locationName = it },
                     placeholder = "Enter shop address",
                     trailingIcon = Icons.Default.LocationOn
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text("Type of Adaptor", color = Color.White, modifier = Modifier.fillMaxWidth())
+                Text("Adaptor Configuration", color = Color.White, modifier = Modifier.fillMaxWidth())
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    listOf("5A", "10A", "15A").forEach {
+                    listOf("5A", "10A", "15A Fast").forEach {
                         FilterChip(
                             selected = adapterType == it,
                             onClick = { adapterType = it },
@@ -105,20 +110,22 @@ fun SellerDetailsScreen(onConfirm: (ChargingShop) -> Unit, onBack: () -> Unit) {
                     trailingIcon = Icons.Default.CurrencyRupee,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
+                Spacer(modifier = Modifier.height(120.dp))
             }
 
             Box(modifier = Modifier.align(Alignment.BottomCenter).padding(24.dp)) {
                 Button(
                     onClick = {
                         val newShop = ChargingShop(
-                            name = shopName.ifBlank { "New Shop" },
-                            distance = "0.5 km", // Mock distance
+                            name = shopName.ifBlank { "Ramesh Charging Hub" },
+                            distance = "0.5 km",
                             adapterType = adapterType,
-                            contact = contactNumber,
-                            price = "₹${pricePerHour.ifBlank { "0" }}",
+                            contact = contactNumber.ifBlank { "+91 98765 43210" },
+                            price = "₹${pricePerHour.ifBlank { "50" }}",
                             rating = 5.0f,
-                            lat = 37.7749 + (Math.random() * 0.1 - 0.05), // Mock coords
-                            lng = -122.4194 + (Math.random() * 0.1 - 0.05)
+                            lat = hostLocation.latitude,
+                            lng = hostLocation.longitude,
+                            isAvailable = true
                         )
                         onConfirm(newShop)
                     },
@@ -129,7 +136,7 @@ fun SellerDetailsScreen(onConfirm: (ChargingShop) -> Unit, onBack: () -> Unit) {
                 ) {
                     val brush = Brush.linearGradient(listOf(Color(0xFF00C853), Color(0xFF00E676)))
                     Box(modifier = Modifier.fillMaxSize().background(brush, RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
-                        Text("START SELLING", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text("START HOSTING", color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -143,8 +150,8 @@ fun SellerDetailsScreen(onConfirm: (ChargingShop) -> Unit, onBack: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun SellerDetailsScreenPreview() {
+fun HostDetailsScreenPreview() {
     TestingTheme {
-        SellerDetailsScreen(onConfirm = {}, onBack = {})
+        HostDetailsScreen(onConfirm = {}, onBack = {})
     }
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.testing.ui.components.AuthInputField
 import com.example.testing.ui.components.LogoHeader
+import com.example.testing.ui.theme.TestingTheme
 
 @Composable
 fun AuthDetailsScreen(
@@ -157,7 +158,7 @@ fun AuthDetailsScreen(
 @Preview(showBackground = true)
 @Composable
 fun LoginDetailsScreenPreview() {
-    MaterialTheme {
+    TestingTheme {
         AuthDetailsScreen(isLoginMode = true, onSuccess = {}, onBack = {})
     }
 }
@@ -165,7 +166,7 @@ fun LoginDetailsScreenPreview() {
 @Preview(showBackground = true, name = "Login Invalid Data")
 @Composable
 fun LoginInvalidDataPreview() {
-    MaterialTheme {
+    TestingTheme {
         AuthDetailsScreen(
             isLoginMode = true,
             onSuccess = {},
@@ -178,7 +179,7 @@ fun LoginInvalidDataPreview() {
 @Preview(showBackground = true)
 @Composable
 fun RegisterDetailsScreenPreview() {
-    MaterialTheme {
+    TestingTheme {
         AuthDetailsScreen(isLoginMode = false, onSuccess = {}, onBack = {})
     }
 }

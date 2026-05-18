@@ -13,9 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.testing.ui.theme.TestingTheme
 
 @Composable
-fun UserSelectionScreen(onRoleSelected: (isBuyer: Boolean) -> Unit) {
+fun UserSelectionScreen(onRoleSelected: (isTraveller: Boolean) -> Unit) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
@@ -49,14 +50,14 @@ fun UserSelectionScreen(onRoleSelected: (isBuyer: Boolean) -> Unit) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 Icons.Default.Person,
-                                contentDescription = "Buyer",
+                                contentDescription = "Traveller",
                                 modifier = Modifier.size(50.dp),
                                 tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Buyer", fontWeight = FontWeight.Bold)
+                    Text("Traveller", fontWeight = FontWeight.Bold)
                 }
 
                 Column(
@@ -71,14 +72,14 @@ fun UserSelectionScreen(onRoleSelected: (isBuyer: Boolean) -> Unit) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 Icons.Default.Store,
-                                contentDescription = "Hosts",
+                                contentDescription = "Host",
                                 modifier = Modifier.size(50.dp),
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Hosts", fontWeight = FontWeight.Bold)
+                    Text("Host", fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -88,7 +89,7 @@ fun UserSelectionScreen(onRoleSelected: (isBuyer: Boolean) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun UserSelectionScreenPreview() {
-    MaterialTheme {
+    TestingTheme {
         UserSelectionScreen(onRoleSelected = {})
     }
 }

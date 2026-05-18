@@ -2,7 +2,6 @@ package com.example.testing.data
 
 /**
  * Enum representing the different screens in the application.
- * Moved to its own file to resolve ClassNotFoundException in Compose Preview.
  */
 enum class AppScreen {
     Welcome, 
@@ -14,11 +13,12 @@ enum class AppScreen {
     RegisterDetails, 
     UserSelection, 
     TravellerDetails, 
-    SellerDetails, 
-    SellerSuccess, 
+    HostDetails, 
+    HostSuccess,
     ShopSelection, 
     Charging, 
     EVGramaMap,
     Directions,
-    PayCalculator
+    PayCalculator,
+    ShopSuccess
 }
