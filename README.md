@@ -1,19 +1,34 @@
 EV - grama charge App - Setup Guide
+
 MindMatrix VTU Internship Program | Project 72
+
 What This App Does
 EV - grama app will solve the problem of lack of EV charging station in rural area .
 
 Post a need ("Need help with Ev customer and make a side income to shops/ homes ")
+
 travller needs to open this app when charge is low ("need to choose nearest charging station by going through google map")
-The hosts ( shop or home) they also need to open this app for one time registration with shop name , price per hour , address and contact number 
-once the traveller is acceptable in price and location he can confirm the slot and visit the shop with in 1 hrs ( slot is reserved ) 
+
+The hosts ( shop or home) they also need to open this app for one time registration with shop name , price per hour , address and contact number
+
+once the traveller is acceptable in price and location he can confirm the slot and visit the shop with in 1 hrs ( slot is reserved )
+
 after the charging process is completed than he can use the smart calculator avialable in App that will calculate hosts paying amount and travelling distance based on the charged completed
+
+
+
 ⚙️ SETUP STEPS (Required Before Running)
+
 Step 1: Create Firebase Project
+
 Go to https://console.firebase.google.com
+
 Click "Add Project" → Name it "EV grama charge app"
+
 Enable Authentication → Sign-in method → Email/Password
+
 Enable Firestore Database → Start in test mode
+
 Step 2: Add Android App to Firebase
 In Firebase Console → Project Settings → Add App → Android
 Package name: com.Ev-gramacharge
